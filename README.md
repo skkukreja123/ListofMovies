@@ -3,6 +3,10 @@
 A Flutter app that displays a list of movies fetched from the TMDB API. It demonstrates **Clean Architecture**, **MVVM**, **Repository Pattern**, **Dependency Injection**, and **Provider** for state management.
 
 ---
+API calling : 'https://api.themoviedb.org/3/movie/now_playing?api_key=$apiKey',
+
+APi Key store in .env
+
 
  Features
 
@@ -40,3 +44,6 @@ Great for listening to and updating UI state
 
 
 ![image](https://github.com/user-attachments/assets/5d0a208b-da1e-4a15-8b91-5d094e0a6f6b)
+
+
+![image](https://github.com/user-attachments/assets/dbe5aadf-d8cc-4736-be90-a82ba942d259)

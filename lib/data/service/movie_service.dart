@@ -31,13 +31,11 @@ class MovieServiceImpl implements MovieService {
     );
 
     if (response.statusCode == 200) {
-      final List<dynamic> data =
-          json.decode(response.data)['results']; // Decode JSON response
-      return data
-          .map((json) => Movie.fromJson(json))
-          .toList(); // Parse and return movies
+      final data = response.data;
+      final List results = data['results'];
+      return results.map((json) => Movie.fromJson(json)).toList();
     } else {
-      throw ServerFailure('Failed to load movies'); // Handle server error
+      throw ServerFailure('Failed to load movies: ${response.statusCode}');
     }
   }
 }

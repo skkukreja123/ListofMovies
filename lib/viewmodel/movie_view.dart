@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:state_managment/data/service/movie_service.dart';
-import '../model/movie.dart';
-import '../core/error/failure.dart';
+import 'package:state_managment/model/movie.dart';
+import 'package:state_managment/core/error/failure.dart';
+import 'package:state_managment/resporitory/movie_resporitory.dart';
 
 class MovieViewModel extends ChangeNotifier {
-  final MovieService movieService;
-  MovieViewModel(this.movieService);
+  final MovieRepository movieRepository;
+  MovieViewModel(this.movieRepository);
 
   List<Movie> _movies = [];
   List<Movie> get movies => _movies;
@@ -22,7 +22,7 @@ class MovieViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _movies = await movieService.getNowPlayingMovies();
+      _movies = await movieRepository.getNowPlayingMovies();
     } catch (e) {
       if (e is Failure) {
         _error = e.message;

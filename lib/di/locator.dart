@@ -2,6 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
 import 'package:state_managment/core/error/network_info.dart';
 import 'package:state_managment/data/service/movie_service.dart';
+import 'package:state_managment/resporitory/movie_resporitory.dart';
 import 'package:state_managment/viewmodel/movie_view.dart';
 
 final getIt = GetIt.instance;
@@ -15,4 +16,7 @@ void setupLocator() {
       () => MovieServiceImpl(networkInfo: getIt()));
 
   getIt.registerFactory(() => MovieViewModel(getIt()));
+
+  getIt.registerLazySingleton<MovieRepository>(
+      () => MovieRepositoryImpl(service: getIt(), networkInfo: getIt()));
 }

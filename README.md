@@ -4,7 +4,7 @@ A Flutter app that displays a list of movies fetched from the TMDB API. It demon
 
 ---
 
-## 🚀 Features
+ Features
 
 - **Home screen** displays a list of movies (poster, title, overview)
 - **Detail screen** shows more information about the selected movie
@@ -37,3 +37,6 @@ Easy to use and efficient
 Encourages MVVM structure
 
 Great for listening to and updating UI state
+
+
+![image](https://github.com/user-attachments/assets/5d0a208b-da1e-4a15-8b91-5d094e0a6f6b)

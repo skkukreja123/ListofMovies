@@ -12,6 +12,17 @@ class MovieCard extends StatelessWidget {
     return ListTile(
       leading: Image.network(
         'https://image.tmdb.org/t/p/w200${movie.posterPath}',
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Center(
+            child: CircularProgressIndicator(
+              value: loadingProgress.expectedTotalBytes != null
+                  ? loadingProgress.cumulativeBytesLoaded /
+                      (loadingProgress.expectedTotalBytes ?? 1)
+                  : null,
+            ),
+          );
+        },
         width: 50,
         fit: BoxFit.cover,
       ),

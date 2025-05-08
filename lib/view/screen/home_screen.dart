@@ -69,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
           await vm.getNowPlayingMovies(isInitial: true);
         },
         child: vm.movies.isEmpty && vm.isLoading
-            ? Center(child: CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator())
             : ListView.builder(
                 controller: _scrollController,
                 itemCount: vm.movies.length + (vm.isLoading ? 1 : 0),
@@ -88,9 +88,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                     );
                   } else {
-                    return Padding(
+                    return const Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: Center(child: CircularProgressIndicator()),
+                      child: const Center(child: CircularProgressIndicator()),
                     );
                   }
                 },

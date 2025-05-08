@@ -24,21 +24,6 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   void initState() {
     super.initState();
-    // print("Movie details:");
-    // print("ID: ${widget.movie.id}");
-    // print("Title: ${widget.movie.title}");
-    // print("Original Title: ${widget.movie.originalTitle}");
-    // print("Overview: ${widget.movie.overview}");
-    // print("Release Date: ${widget.movie.releaseDate}");
-    // print("Poster: ${widget.movie.posterPath}");
-    // print("Backdrop: ${widget.movie.backdropPath}");
-    // print("Vote Avg: ${widget.movie.voteAverage}");
-    // print("Vote Count: ${widget.movie.voteCount}");
-    // print("Genres: ${widget.movie.genreIds.join(', ')}");
-    // print("Adult: ${widget.movie.adult}");
-    // print("Language: ${widget.movie.originalLanguage}");
-    // print("Video: ${widget.movie.video}");
-    // print("Popularity: ${widget.movie.popularity}");
   }
 
   Future<void> _refreshDetail() async {

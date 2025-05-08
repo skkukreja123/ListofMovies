@@ -36,6 +36,7 @@ dependencies:
   dio: ^5.0.0
   mockito: ^5.4.2
   build_runner: ^2.4.8
+  flutter_rating_bar: ^4.0.0
 
 
 
@@ -84,6 +85,16 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
+  fonts:
+    - family: TT-Hoves
+      fonts:
+        - asset: assets/fonts/TT-Hoves/TTHoves-Regular.ttf
+        - asset: assets/fonts/TT-Hoves/TTHoves-MediumItalic.ttf
+          style: italic
+          weight: 500
+        - asset: assets/fonts/TT-Hoves/TTHoves-BoldItalic.ttf
+          style: italic
+          weight: 700
   # fonts:
   #   - family: Schyler
   #     fonts:

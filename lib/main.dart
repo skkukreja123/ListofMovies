@@ -17,6 +17,10 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => getIt<MovieViewModel>()..getNowPlayingMovies(),
       child: MaterialApp(
+        theme: ThemeData(
+          fontFamily: 'TT-Hoves',
+          // other theme settings
+        ),
         title: 'Movie App',
         home: HomeScreen(),
         debugShowCheckedModeBanner: false,

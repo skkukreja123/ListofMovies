@@ -56,7 +56,7 @@ class RatingService implements IRatingService {
 
     final response = await dio.post(
       'https://api.themoviedb.org/3/movie/$movieId/rating?api_key=$apiKey&guest_session_id=$sessionId',
-      data: jsonEncode({'value': rating * 5}),
+      data: jsonEncode({'value': rating * 2}),
       options: Options(
         headers: {'Content-Type': 'application/json;charset=utf-8'},
       ),

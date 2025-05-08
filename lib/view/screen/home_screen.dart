@@ -4,6 +4,7 @@ import 'package:state_managment/view/screen/datail_screen.dart';
 import 'package:state_managment/view/widget/movie_card.dart';
 import 'package:state_managment/viewmodel/movie_view.dart';
 
+import '../../ui/style/text_style.dart';
 import '../widget/search_bar.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -46,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('All Movies'),
+            const Text('All Movies', style: AppTextStyles.title),
             SizedBox(
               width: 200, // Adjust width as needed
               child: MovieSearchBar(

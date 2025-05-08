@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import '../../helper/movie_image.dart';
-import '../../helper/star_rating.dart';
+
 import '../../model/movie.dart';
 import '../../ui/style/text_style.dart';
 

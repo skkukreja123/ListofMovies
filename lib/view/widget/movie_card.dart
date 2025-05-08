@@ -5,26 +5,26 @@ class MovieCard extends StatelessWidget {
   final Movie movie;
   final VoidCallback onTap;
 
-  MovieCard({required this.movie, required this.onTap});
+  const MovieCard({required this.movie, required this.onTap, super.key});
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       leading: Image.network(
         'https://image.tmdb.org/t/p/w200${movie.posterPath}',
+        width: 60,
+        height: 60,
+        fit: BoxFit.cover,
+        cacheWidth: 60,
+        cacheHeight: 60,
         loadingBuilder: (context, child, loadingProgress) {
           if (loadingProgress == null) return child;
-          return Center(
-            child: CircularProgressIndicator(
-              value: loadingProgress.expectedTotalBytes != null
-                  ? loadingProgress.cumulativeBytesLoaded /
-                      (loadingProgress.expectedTotalBytes ?? 1)
-                  : null,
-            ),
+          return const SizedBox(
+            width: 60,
+            height: 60,
+            child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
           );
         },
-        width: 50,
-        fit: BoxFit.cover,
       ),
       title: Text(movie.title),
       subtitle: Text(
@@ -33,6 +33,7 @@ class MovieCard extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
       ),
       onTap: onTap,
+      trailing: Icon(Icons.arrow_forward),
     );
   }
 }

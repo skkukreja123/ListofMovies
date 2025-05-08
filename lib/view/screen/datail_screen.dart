@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:state_managment/view/widget/submit_rating_button.dart';
 import '../../helper/movie_image.dart';
 
 import '../../model/movie.dart';
@@ -21,21 +22,21 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   void initState() {
     super.initState();
-    print("Movie details:");
-    print("ID: ${widget.movie.id}");
-    print("Title: ${widget.movie.title}");
-    print("Original Title: ${widget.movie.originalTitle}");
-    print("Overview: ${widget.movie.overview}");
-    print("Release Date: ${widget.movie.releaseDate}");
-    print("Poster: ${widget.movie.posterPath}");
-    print("Backdrop: ${widget.movie.backdropPath}");
-    print("Vote Avg: ${widget.movie.voteAverage}");
-    print("Vote Count: ${widget.movie.voteCount}");
-    print("Genres: ${widget.movie.genreIds.join(', ')}");
-    print("Adult: ${widget.movie.adult}");
-    print("Language: ${widget.movie.originalLanguage}");
-    print("Video: ${widget.movie.video}");
-    print("Popularity: ${widget.movie.popularity}");
+    // print("Movie details:");
+    // print("ID: ${widget.movie.id}");
+    // print("Title: ${widget.movie.title}");
+    // print("Original Title: ${widget.movie.originalTitle}");
+    // print("Overview: ${widget.movie.overview}");
+    // print("Release Date: ${widget.movie.releaseDate}");
+    // print("Poster: ${widget.movie.posterPath}");
+    // print("Backdrop: ${widget.movie.backdropPath}");
+    // print("Vote Avg: ${widget.movie.voteAverage}");
+    // print("Vote Count: ${widget.movie.voteCount}");
+    // print("Genres: ${widget.movie.genreIds.join(', ')}");
+    // print("Adult: ${widget.movie.adult}");
+    // print("Language: ${widget.movie.originalLanguage}");
+    // print("Video: ${widget.movie.video}");
+    // print("Popularity: ${widget.movie.popularity}");
   }
 
   Widget detailText(String label, String value) {
@@ -108,6 +109,7 @@ class _DetailScreenState extends State<DetailScreen> {
               ),
             ),
             const SizedBox(height: 16),
+            SubmitRatingButton(movie: widget.movie, rating: _rating)
           ],
         ),
       ),

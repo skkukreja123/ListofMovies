@@ -19,17 +19,13 @@ class MovieImage extends StatelessWidget {
             cacheWidth: constraints.maxWidth.toInt(), // Optimized width
             cacheHeight: 300, // Match display height
             loadingBuilder: (context, child, loadingProgress) {
+              print("Loading progress: $loadingProgress");
               if (loadingProgress == null) return child;
-              return SizedBox(
+              return const SizedBox(
                 width: double.infinity,
                 height: 300,
                 child: Center(
-                  child: CircularProgressIndicator(
-                    value: loadingProgress.expectedTotalBytes != null
-                        ? loadingProgress.cumulativeBytesLoaded /
-                            (loadingProgress.expectedTotalBytes ?? 1)
-                        : null,
-                  ),
+                  child: CircularProgressIndicator(strokeWidth: 2),
                 ),
               );
             },

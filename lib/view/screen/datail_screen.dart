@@ -1,16 +1,18 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:provider/provider.dart';
 import 'package:state_managment/view/widget/submit_rating_button.dart';
+import 'package:state_managment/viewmodel/movie_view.dart';
 import '../../helper/movie_image.dart';
 
 import '../../model/movie.dart';
 import '../../ui/style/text_style.dart';
 
 class DetailScreen extends StatefulWidget {
-  final Movie movie;
+  final int movieid;
 
-  const DetailScreen({required this.movie, super.key});
+  const DetailScreen({required this.movieid, super.key});
 
   @override
   State<DetailScreen> createState() => _DetailScreenState();
@@ -24,6 +26,21 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   void initState() {
     super.initState();
+    // Initialize the loading state
+    _isLoading = true;
+    final vm = Provider.of<MovieViewModel>(context, listen: false);
+    vm.getMovieDetails(widget.movieid).then((_) {
+      setState(() {
+        _isLoading = false;
+      });
+    }).catchError((error) {
+      setState(() {
+        _isLoading = false;
+      });
+      if (kDebugMode) {
+        print('Error fetching movie details: $error');
+      }
+    });
   }
 
   Future<void> _refreshDetail() async {
@@ -44,8 +61,11 @@ class _DetailScreenState extends State<DetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final movie = Provider.of<MovieViewModel>(context).movieDetails;
+    print('Movie ID: ${widget.movieid}');
+    print('Movie Details: $movie');
     return Scaffold(
-        appBar: AppBar(title: Text(widget.movie.title)),
+        appBar: AppBar(title: Text('Movie Details')),
         body: RefreshIndicator(
           onRefresh: _refreshDetail,
           child: _isLoading
@@ -56,11 +76,11 @@ class _DetailScreenState extends State<DetailScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      MovieImage(posterPath: widget.movie.posterPath),
+                      MovieImage(posterPath: movie.posterPath),
                       const SizedBox(height: 16),
-                      Text(widget.movie.overview, style: AppTextStyles.normal),
+                      Text(movie.overview, style: AppTextStyles.normal),
                       const SizedBox(height: 16),
-                      detailText('Release Date', widget.movie.releaseDate),
+                      detailText('Release Date', movie.releaseDate),
                       const SizedBox(height: 8),
                       Text('Rating:', style: AppTextStyles.bold16),
                       RatingBar.builder(
@@ -89,21 +109,20 @@ class _DetailScreenState extends State<DetailScreen> {
                           style: AppTextStyles.bold16,
                         ),
                       ),
-                      detailText('Genre IDs', widget.movie.genreIds.join(', ')),
+                      // detailText('Genres',
+                      //     // movie.genres?.map((g) => g.name).join(', ') ?? 'N/A'),
+                      // const SizedBox(height: 8),
+                      detailText('Original Title', movie.originalTitle),
                       const SizedBox(height: 8),
-                      detailText('Original Title', widget.movie.originalTitle),
+                      detailText('Vote Count', movie.voteCount.toString()),
                       const SizedBox(height: 8),
-                      detailText(
-                          'Vote Count', widget.movie.voteCount.toString()),
+                      detailText('Adult', movie.adult.toString()),
                       const SizedBox(height: 8),
-                      detailText('Adult', widget.movie.adult.toString()),
+                      detailText('Language', movie.originalLanguage),
                       const SizedBox(height: 8),
-                      detailText('Language', widget.movie.originalLanguage),
+                      detailText('Video', movie.video.toString()),
                       const SizedBox(height: 8),
-                      detailText('Video', widget.movie.video.toString()),
-                      const SizedBox(height: 8),
-                      detailText(
-                          'Popularity', widget.movie.popularity.toString()),
+                      detailText('Popularity', movie.popularity.toString()),
                       const SizedBox(height: 16),
                       const Text('Leave a Review', style: AppTextStyles.bold16),
                       const SizedBox(height: 8),
@@ -116,7 +135,45 @@ class _DetailScreenState extends State<DetailScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      SubmitRatingButton(movie: widget.movie, rating: _rating)
+                      // Genres
+                      if (movie.genres.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                            'Genres: ${movie.genres.map((g) => g.name).join(', ')}',
+                            style: AppTextStyles.bold16),
+                      ],
+
+// Production Companies
+                      const SizedBox(height: 16),
+                      const Text('Production Companies:',
+                          style: AppTextStyles.bold16),
+                      const SizedBox(height: 8),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: movie.productionCompanies.map((company) {
+                          return Row(
+                            children: [
+                              if (company.logoPath != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: Image.network(
+                                    'https://image.tmdb.org/t/p/w200${company.logoPath}',
+                                    width: 50,
+                                    height: 50,
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            const Icon(Icons.broken_image),
+                                  ),
+                                ),
+                              Expanded(
+                                  child: Text(company.name,
+                                      style: AppTextStyles.normal)),
+                            ],
+                          );
+                        }).toList(),
+                      ),
+
+                      SubmitRatingButton(movie: movie, rating: _rating)
                     ],
                   ),
                 ),

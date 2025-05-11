@@ -2,9 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:state_managment/data/service/rating_service.dart';
 import 'package:state_managment/model/movie.dart';
+import 'package:state_managment/model/specfic_movie.dart';
 
 class SubmitRatingButton extends StatelessWidget {
-  final Movie movie;
+  final MovieSpecific movie;
   final double rating;
 
   const SubmitRatingButton({

@@ -5,9 +5,12 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:dio/dio.dart';
 
+import '../../model/specfic_movie.dart';
+
 abstract class MovieService {
   Future<List<Movie>> getNowPlayingMovies({int page = 1});
   Future<List<Movie>> searchMovies(String query);
+  Future<MovieSpecific> getMovieDetails(int movieId);
 }
 
 class MovieServiceImpl implements MovieService {
@@ -37,6 +40,32 @@ class MovieServiceImpl implements MovieService {
       return results.map((json) => Movie.fromJson(json)).toList();
     } else {
       throw ServerFailure('Failed to load movies: ${response.statusCode}');
+    }
+  }
+
+  Future<MovieSpecific> getMovieDetails(int movieId) async {
+    await dotenv.load();
+    if (!await networkInfo.isConnected) {
+      throw NetworkFailure('No Internet Connection');
+    }
+
+    final apiKey = dotenv.env['TMDB_API_KEY'];
+    if (apiKey == null || apiKey.isEmpty) {
+      throw ServerFailure('API key not found in .env');
+    }
+
+    final response = await dio.get(
+      'https://api.themoviedb.org/3/movie/$movieId?api_key=$apiKey',
+    );
+
+    if (response.statusCode == 200) {
+      final jsondata = response.data;
+      // Check if the response contains valid data
+
+      return MovieSpecific.fromJson(jsondata);
+    } else {
+      throw ServerFailure(
+          'Failed to load movie details: ${response.statusCode}');
     }
   }
 

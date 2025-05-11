@@ -7,6 +7,9 @@ class MovieImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (posterPath == null || posterPath!.isEmpty) {
+      return const Placeholder(fallbackHeight: 300); // or use a fallback image
+    }
     return LayoutBuilder(
       builder: (context, constraints) {
         return ClipRRect(

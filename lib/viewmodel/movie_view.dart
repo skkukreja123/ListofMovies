@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:state_managment/data/service/movie_service.dart';
 import 'package:state_managment/model/movie.dart';
 import 'package:state_managment/core/error/failure.dart';
+import 'package:state_managment/model/specfic_movie.dart';
 import 'package:state_managment/resporitory/movie_resporitory.dart';
 
 class MovieViewModel extends ChangeNotifier {
@@ -10,6 +11,28 @@ class MovieViewModel extends ChangeNotifier {
 
   List<Movie> _movies = [];
   List<Movie> get movies => _movies;
+
+  MovieSpecific _movieDetails = MovieSpecific.empty();
+  MovieSpecific get movieDetails => _movieDetails;
+
+  Future<void> getMovieDetails(int movieId) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      _movieDetails = await movieRepository.getMovieDetails(movieId);
+      print('Movie details: $_movieDetails');
+    } catch (e) {
+      if (e is Failure) {
+        _error = e.message;
+      } else {
+        _error = 'Unexpected error: $e';
+      }
+    }
+
+    _isLoading = false;
+    notifyListeners();
+  }
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;

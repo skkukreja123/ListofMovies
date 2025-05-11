@@ -49,4 +49,23 @@ class Movie {
       popularity: (json['popularity'] as num).toDouble(),
     );
   }
+
+  static Movie empty() {
+    return Movie(
+      id: 0,
+      title: '',
+      overview: '',
+      posterPath: '',
+      backdropPath: '',
+      releaseDate: '',
+      voteAverage: 0.0,
+      voteCount: 0,
+      genreIds: [],
+      adult: false,
+      originalLanguage: '',
+      originalTitle: '',
+      video: false,
+      popularity: 0.0,
+    );
+  }
 }

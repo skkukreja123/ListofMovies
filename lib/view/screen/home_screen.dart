@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:state_managment/view/screen/datail_screen.dart';
 import 'package:state_managment/view/widget/movie_card.dart';
+import 'package:state_managment/viewmodel/auth_view_model.dart';
 import 'package:state_managment/viewmodel/movie_view.dart';
 
 import '../../ui/style/text_style.dart';
@@ -64,6 +65,16 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              final vm = Provider.of<AuthViewModel>(context, listen: false);
+              vm.logout();
+              Navigator.pushReplacementNamed(context, '/login');
+            },
+          ),
+        ],
       ),
       body: RefreshIndicator(
         onRefresh: () async {

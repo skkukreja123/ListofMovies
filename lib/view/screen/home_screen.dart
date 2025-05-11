@@ -67,6 +67,12 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           IconButton(
+            icon: Icon(Icons.favorite),
+            onPressed: () {
+              Navigator.pushNamed(context, '/favorites');
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
               final vm = Provider.of<AuthViewModel>(context, listen: false);
@@ -82,27 +88,30 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         child: vm.movies.isEmpty && vm.isLoading
             ? const Center(child: CircularProgressIndicator())
-            : ListView.builder(
+            : AnimatedList(
                 controller: _scrollController,
-                itemCount: vm.movies.length + (vm.isLoading ? 1 : 0),
-                itemBuilder: (context, index) {
+                initialItemCount: vm.movies.length + (vm.isLoading ? 1 : 0),
+                itemBuilder: (context, index, animation) {
                   if (index < vm.movies.length) {
                     final movie = vm.movies[index];
-                    return MovieCard(
-                      movie: movie,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => DetailScreen(movieid: movie.id),
-                          ),
-                        );
-                      },
+                    return FadeTransition(
+                      opacity: animation,
+                      child: MovieCard(
+                        movie: movie,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => DetailScreen(movieid: movie.id),
+                            ),
+                          );
+                        },
+                      ),
                     );
                   } else {
                     return const Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: const Center(child: CircularProgressIndicator()),
+                      padding: EdgeInsets.all(16.0),
+                      child: Center(child: CircularProgressIndicator()),
                     );
                   }
                 },

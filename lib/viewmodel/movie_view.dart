@@ -1,13 +1,23 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:state_managment/data/service/firestore_service.dart';
 import 'package:state_managment/data/service/movie_service.dart';
 import 'package:state_managment/model/movie.dart';
 import 'package:state_managment/core/error/failure.dart';
 import 'package:state_managment/model/specfic_movie.dart';
+import 'package:state_managment/resporitory/firestore_resporitory.dart';
 import 'package:state_managment/resporitory/movie_resporitory.dart';
 
 class MovieViewModel extends ChangeNotifier {
   final MovieRepository movieRepository;
   MovieViewModel(this.movieRepository);
+
+  final FireStoreRepository _firestore = FireStoreRepositoryImpl(
+    firestoreService:
+        FirestoreServiceImpl(firestore: FirebaseFirestore.instance),
+  );
+
+  List<int> favoriteIds = [];
 
   List<Movie> _movies = [];
   List<Movie> get movies => _movies;
@@ -91,6 +101,23 @@ class MovieViewModel extends ChangeNotifier {
     }
 
     _isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> toggleFavorite(int movieId) async {
+    if (favoriteIds.contains(movieId)) {
+      await _firestore.removeFavoriteMovie(movieId);
+      favoriteIds.remove(movieId);
+    } else {
+      await _firestore.addFavoriteMovie(movieId);
+      print(movieId);
+      favoriteIds.add(movieId);
+    }
+    notifyListeners();
+  }
+
+  Future<void> getFavoriteMovies() async {
+    favoriteIds = await _firestore.getFavoriteMovies();
     notifyListeners();
   }
 }

@@ -24,6 +24,8 @@ class ProductionCompany {
       logoPath: json['logo_path'],
     );
   }
+
+  get id => null;
 }
 
 class MovieSpecific {

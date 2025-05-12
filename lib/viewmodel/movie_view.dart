@@ -19,6 +19,8 @@ class MovieViewModel extends ChangeNotifier {
 
   List<int> favoriteIds = [];
 
+  List<int> genreIds = [];
+
   List<Movie> _movies = [];
   List<Movie> get movies => _movies;
 
@@ -119,5 +121,26 @@ class MovieViewModel extends ChangeNotifier {
   Future<void> getFavoriteMovies() async {
     favoriteIds = await _firestore.getFavoriteMovies();
     notifyListeners();
+  }
+
+  Future<void> addMovieThroughGenre(String genre, int movieId) async {
+    try {
+      if (genreIds.contains(movieId)) {
+        await _firestore.removeMovieThroughGenre(genre, movieId);
+        genreIds.remove(movieId);
+      } else {
+        print('Adding movie through genre: $genre');
+        print('Movie ID: $movieId');
+        await _firestore.addMovieThroughGenre(genre, movieId);
+        genreIds.add(movieId);
+      }
+      notifyListeners();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<List<int>> getMovieThroughGenre(String genre) async {
+    return await _firestore.getMovieThroughGenre(genre);
   }
 }

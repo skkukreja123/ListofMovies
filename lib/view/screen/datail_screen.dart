@@ -62,6 +62,11 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   Widget build(BuildContext context) {
     final movie = Provider.of<MovieViewModel>(context).movieDetails;
+
+    final viewModel = Provider.of<MovieViewModel>(context);
+
+    final isGenre = viewModel.genreIds.contains(movie.id);
+
     print('Movie ID: ${widget.movieid}');
     print('Movie Details: $movie');
     return Scaffold(
@@ -139,10 +144,27 @@ class _DetailScreenState extends State<DetailScreen> {
                       if (movie.genres.isNotEmpty) ...[
                         const SizedBox(height: 8),
                         Text(
-                            'Genres: ${movie.genres.map((g) => g.name).join(', ')}',
-                            style: AppTextStyles.bold16),
+                          'Genres:',
+                          style: AppTextStyles.bold16,
+                        ),
+                        const SizedBox(height: 8),
+                        Wrap(
+                          spacing: 8.0,
+                          runSpacing: 8.0,
+                          children: movie.genres.map((genre) {
+                            return ElevatedButton(
+                              onPressed: () {
+                                // Handle genre button press
+                                isGenre ? Colors.red : null;
+                                viewModel.addMovieThroughGenre(
+                                    genre.name, movie.id);
+                                print('Selected genre: ${genre.name}');
+                              },
+                              child: Text(genre.name),
+                            );
+                          }).toList(),
+                        )
                       ],
-
 // Production Companies
                       const SizedBox(height: 16),
                       const Text('Production Companies:',

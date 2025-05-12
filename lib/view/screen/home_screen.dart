@@ -67,6 +67,12 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           IconButton(
+            icon: const Icon(Icons.category),
+            onPressed: () {
+              Navigator.pushNamed(context, '/genre');
+            },
+          ),
+          IconButton(
             icon: Icon(Icons.favorite),
             onPressed: () {
               Navigator.pushNamed(context, '/favorites');

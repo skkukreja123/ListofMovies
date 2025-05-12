@@ -19,6 +19,8 @@ class MovieViewModel extends ChangeNotifier {
 
   List<int> favoriteIds = [];
 
+  Map<String, int> genreIds = {};
+
   List<Movie> _movies = [];
   List<Movie> get movies => _movies;
 
@@ -31,6 +33,7 @@ class MovieViewModel extends ChangeNotifier {
 
     try {
       _movieDetails = await movieRepository.getMovieDetails(movieId);
+      await fetchGenreCounts();
       print('Movie details: $_movieDetails');
     } catch (e) {
       if (e is Failure) {
@@ -73,6 +76,8 @@ class MovieViewModel extends ChangeNotifier {
         _movies.addAll(newmovies);
         currentPage++;
       }
+      await getFavoriteMovies();
+      await fetchGenreCounts();
     } catch (e) {
       if (e is Failure) {
         _error = e.message;
@@ -119,5 +124,51 @@ class MovieViewModel extends ChangeNotifier {
   Future<void> getFavoriteMovies() async {
     favoriteIds = await _firestore.getFavoriteMovies();
     notifyListeners();
+  }
+
+  List<Map<String, dynamic>> genreCounts = [];
+  List<Map<String, dynamic>> get getGenreCounts => genreCounts;
+
+  Future<void> fetchGenreCounts() async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      // Fetch your data (e.g., from Firestore)
+      genreCounts = await _firestore.getAllGenreCounts();
+      print(genreCounts);
+    } catch (e) {
+      print(e);
+    }
+
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> addMovieThroughGenre(
+      String genre, int movieId, String posterPath) async {
+    try {
+      final existingEntry = genreCounts.firstWhere(
+        (entry) =>
+            entry['genre'] == genre &&
+            (entry['movie_id'] as List).contains(movieId),
+        orElse: () => {},
+      );
+      print('Existing entry: $existingEntry');
+      if (existingEntry.isNotEmpty) {
+        // Both genre and movieId match, so remove
+        await _firestore.removeMovieThroughGenre(genre, movieId);
+        // genreCounts.remove
+        print('Removed movie from genre: $genre');
+      } else {
+        // Either genre is new or movieId is different, so add/update
+        print('Adding movie through genre: $genre');
+        print('Movie ID: $movieId');
+        await _firestore.addMovieThroughGenre(genre, movieId, posterPath);
+      }
+      notifyListeners();
+    } catch (e) {
+      print('Error in addMovieThroughGenre: $e');
+    }
   }
 }

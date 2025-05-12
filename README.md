@@ -43,7 +43,11 @@ Encourages MVVM structure
 Great for listening to and updating UI state
 
 
-![image](https://github.com/user-attachments/assets/5d0a208b-da1e-4a15-8b91-5d094e0a6f6b)
+![image](https://github.com/user-attachments/assets/e99eb96d-fecd-4dec-961e-353b3a10e10c)
+![image](https://github.com/user-attachments/assets/dae7b070-aa78-4664-905a-5ba647c96103)
+
+![image](https://github.com/user-attachments/assets/04a4cbb9-a22f-4cbd-84d7-640072be7e7c)
+
+![image](https://github.com/user-attachments/assets/c575194b-65b3-4de0-8a7f-3e128ff460c1)
 
 
-![image](https://github.com/user-attachments/assets/dbe5aadf-d8cc-4736-be90-a82ba942d259)

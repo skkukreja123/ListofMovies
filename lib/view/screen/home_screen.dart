@@ -67,6 +67,12 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           IconButton(
+            icon: const Icon(Icons.category),
+            onPressed: () {
+              Navigator.pushNamed(context, '/genre');
+            },
+          ),
+          IconButton(
             icon: Icon(Icons.favorite),
             onPressed: () {
               Navigator.pushNamed(context, '/favorites');
@@ -88,25 +94,22 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         child: vm.movies.isEmpty && vm.isLoading
             ? const Center(child: CircularProgressIndicator())
-            : AnimatedList(
+            : ListView.builder(
                 controller: _scrollController,
-                initialItemCount: vm.movies.length + (vm.isLoading ? 1 : 0),
-                itemBuilder: (context, index, animation) {
+                itemCount: vm.movies.length + (vm.isLoading ? 1 : 0),
+                itemBuilder: (context, index) {
                   if (index < vm.movies.length) {
                     final movie = vm.movies[index];
-                    return FadeTransition(
-                      opacity: animation,
-                      child: MovieCard(
-                        movie: movie,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => DetailScreen(movieid: movie.id),
-                            ),
-                          );
-                        },
-                      ),
+                    return MovieCard(
+                      movie: movie,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => DetailScreen(movieid: movie.id),
+                          ),
+                        );
+                      },
                     );
                   } else {
                     return const Padding(

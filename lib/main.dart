@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:state_managment/di/locator.dart';
 import 'package:state_managment/view/auth/login_screen.dart';
 import 'package:state_managment/view/screen/favourite_screen.dart';
+import 'package:state_managment/view/screen/genre_screen.dart';
 import 'package:state_managment/view/screen/home_screen.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:state_managment/viewmodel/auth_view_model.dart';
@@ -56,6 +57,7 @@ class MyApp extends StatelessWidget {
               '/login': (context) => LoginScreen(isLogin: true),
               '/register': (context) => LoginScreen(isLogin: false),
               '/favorites': (context) => FavoritesScreen(),
+              '/genre': (context) => GenreScreen(),
             },
           );
         },

@@ -65,8 +65,6 @@ class _DetailScreenState extends State<DetailScreen> {
 
     final viewModel = Provider.of<MovieViewModel>(context);
 
-    final isGenre = viewModel.genreIds.contains(movie.id);
-
     print('Movie ID: ${widget.movieid}');
     print('Movie Details: $movie');
     return Scaffold(
@@ -152,12 +150,20 @@ class _DetailScreenState extends State<DetailScreen> {
                           spacing: 8.0,
                           runSpacing: 8.0,
                           children: movie.genres.map((genre) {
+                            final isInGenre = viewModel.genreCounts.any(
+                                (entry) =>
+                                    entry['genre'] == genre.name &&
+                                    (entry['movie_id'] as List)
+                                        .contains(movie.id));
+
                             return ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    isInGenre ? Colors.red : Colors.yellow,
+                              ),
                               onPressed: () {
-                                // Handle genre button press
-                                isGenre ? Colors.red : null;
                                 viewModel.addMovieThroughGenre(
-                                    genre.name, movie.id);
+                                    genre.name, movie.id, movie.posterPath);
                                 print('Selected genre: ${genre.name}');
                               },
                               child: Text(genre.name),

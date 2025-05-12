@@ -6,9 +6,13 @@ abstract class FirestoreService {
   Future<void> addFavoriteMovie(int movieId);
   Future<List<int>> getFavoriteMovies();
   Future<void> removeFavoriteMovie(int movieId);
-  Future<void> addMovieThroughGenre(String genre, int movieId);
+  Future<void> addMovieThroughGenre(
+      String genre, int movieId, String posterPath);
   Future<List<int>> getMovieThroughGenre(String genre);
   Future<void> removeMovieThroughGenre(String genre, int movieId);
+  Future<List<Map<String, dynamic>>> getAllGenreCounts();
+  Future<void> incrementGenreCount(String genre);
+  Future<void> decrementGenreCount(String genre);
 }
 
 class FirestoreServiceImpl implements FirestoreService {
@@ -58,7 +62,8 @@ class FirestoreServiceImpl implements FirestoreService {
     }
   }
 
-  Future<void> addMovieThroughGenre(String genre, int movieId) async {
+  Future<void> addMovieThroughGenre(
+      String genre, int movieId, String posterPath) async {
     try {
       final userId = _auth.currentUser?.uid;
       if (userId != null) {
@@ -71,6 +76,7 @@ class FirestoreServiceImpl implements FirestoreService {
         final movieDocRef = genref.collection('movies').doc(movieId.toString());
         await movieDocRef.set({
           'movie_id': movieId,
+          'poster_path': posterPath,
         });
 
         await genref.set({
@@ -112,5 +118,72 @@ class FirestoreServiceImpl implements FirestoreService {
         await doc.reference.delete();
       }
     }
+  }
+
+  Future<List<Map<String, dynamic>>> getAllGenreCounts() async {
+    final userId = _auth.currentUser?.uid;
+    if (userId == null) return [];
+
+    final snapshot =
+        await _firestore.collection('users').doc(userId).collection('genres');
+
+    final finalsnapshot = await snapshot.get();
+    final List<Map<String, dynamic>> genreCounts = [];
+
+    for (var doc in finalsnapshot.docs) {
+      final data = doc.data();
+      final genre = doc.id;
+      final count = data['count'] ?? 0;
+      final movieshot = await snapshot.doc(genre).collection('movies').get();
+      print(genre);
+      print(movieshot.docs.map((doc) => doc.data()));
+      // for (var m in movieshot.docs) {
+      //   print(m.data());
+      // }
+      List<String>? posterpath;
+      List<int>? movieId;
+      if (movieshot.docs.isNotEmpty) {
+        posterpath = movieshot.docs
+            .map((e) => e.data()['poster_path'] as String)
+            .toList();
+        movieId =
+            movieshot.docs.map((e) => e.data()['movie_id'] as int).toList();
+      }
+      genreCounts.add({
+        'genre': genre,
+        'count': count,
+        'movie_id': movieId,
+        'poster_path': posterpath,
+      });
+    }
+    return genreCounts;
+  }
+
+  Future<void> incrementGenreCount(String genre) async {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId == null) return;
+
+    final genreRef = _firestore
+        .collection('users')
+        .doc(userId)
+        .collection('genres')
+        .doc(genre);
+
+    await genreRef
+        .set({'count': FieldValue.increment(1)}, SetOptions(merge: true));
+  }
+
+  Future<void> decrementGenreCount(String genre) async {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId == null) return;
+
+    final genreRef = _firestore
+        .collection('users')
+        .doc(userId)
+        .collection('genres')
+        .doc(genre);
+
+    await genreRef
+        .set({'count': FieldValue.increment(-1)}, SetOptions(merge: true));
   }
 }

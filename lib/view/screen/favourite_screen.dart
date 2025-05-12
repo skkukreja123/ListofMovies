@@ -26,31 +26,34 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Favorite Movies')),
-      body: AnimatedSwitcher(
-        duration: Duration(milliseconds: 300),
-        child: favoriteMovies.isEmpty
-            ? const Center(child: Text("No favorites yet."))
-            : AnimatedList(
-                initialItemCount: favoriteMovies.length,
-                itemBuilder: (context, index, animation) {
-                  final movie = favoriteMovies[index];
-                  return FadeTransition(
-                    opacity: animation,
-                    child: MovieCard(
-                      movie: movie,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => DetailScreen(movieid: movie.id),
+      body: vm.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : AnimatedSwitcher(
+              duration: Duration(milliseconds: 300),
+              child: favoriteMovies.isEmpty
+                  ? const Center(child: Text("No favorites yet."))
+                  : AnimatedList(
+                      initialItemCount: favoriteMovies.length,
+                      itemBuilder: (context, index, animation) {
+                        final movie = favoriteMovies[index];
+                        return FadeTransition(
+                          opacity: animation,
+                          child: MovieCard(
+                            movie: movie,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      DetailScreen(movieid: movie.id),
+                                ),
+                              );
+                            },
                           ),
                         );
                       },
                     ),
-                  );
-                },
-              ),
-      ),
+            ),
     );
   }
 }

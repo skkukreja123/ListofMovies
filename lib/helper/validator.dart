@@ -15,14 +15,22 @@ class Validators {
     if (value == null || value.isEmpty) {
       return 'Password is required';
     }
-    final passwordRegex =
-        RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$');
+
+    print('Validating password: $value');
+
+    final passwordRegex = RegExp(
+        r'^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{8,}$');
+
+    print('Password regex: $passwordRegex');
+    print(value);
+    print('Password regex match: ${passwordRegex.hasMatch(value)}');
+    print('Password length: ${value.length}');
     if (!passwordRegex.hasMatch(value)) {
-      return 'Password must contain at least one uppercase letter, one lowercase letter, and one number';
+      return 'Password must contain at least 8 characters, '
+          'one uppercase letter, one lowercase letter, and one number';
     }
-    if (value.length < 6) {
-      return 'Password must be at least 6 characters long';
-    }
+    print('Password is valid');
+
     return null;
   }
 }

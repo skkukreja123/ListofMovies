@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _passwordController,
                 decoration: const InputDecoration(labelText: 'Password'),
                 obscureText: true,
-                // validator: Validators.validatePassword,
+                validator: Validators.validatePassword,
               ),
               const SizedBox(height: 20),
               ElevatedButton(

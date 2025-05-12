@@ -158,6 +158,7 @@ class MovieViewModel extends ChangeNotifier {
       if (existingEntry.isNotEmpty) {
         // Both genre and movieId match, so remove
         await _firestore.removeMovieThroughGenre(genre, movieId);
+
         // genreCounts.remove
         print('Removed movie from genre: $genre');
       } else {

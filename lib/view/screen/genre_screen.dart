@@ -58,7 +58,9 @@ class _GenreScreenState extends State<GenreScreen> {
                       ),
                     ],
                   ),
-                  ...vm.genreCounts.map((entry) {
+                  ...vm.genreCounts
+                      .where((entry) => entry['count'] > 0)
+                      .map((entry) {
                     return TableRow(
                       children: [
                         Padding(

@@ -19,6 +19,7 @@ class MovieServiceImpl implements MovieService {
 
   MovieServiceImpl({required this.networkInfo}) : dio = Dio();
 
+  @override
   Future<List<Movie>> getNowPlayingMovies({int page = 1}) async {
     await dotenv.load();
     if (!await networkInfo.isConnected) {
@@ -37,12 +38,16 @@ class MovieServiceImpl implements MovieService {
     if (response.statusCode == 200) {
       final data = response.data;
       final List results = data['results'];
+      print('Results: $results');
+      // Check if the response contains valid data
+      print(results.map((json) => Movie.fromJson(json)).toList());
       return results.map((json) => Movie.fromJson(json)).toList();
     } else {
       throw ServerFailure('Failed to load movies: ${response.statusCode}');
     }
   }
 
+  @override
   Future<MovieSpecific> getMovieDetails(int movieId) async {
     await dotenv.load();
     if (!await networkInfo.isConnected) {
@@ -69,6 +74,7 @@ class MovieServiceImpl implements MovieService {
     }
   }
 
+  @override
   Future<List<Movie>> searchMovies(String query) async {
     await dotenv.load();
     final apiKey = dotenv.env['TMDB_API_KEY']; // Get API key from .env

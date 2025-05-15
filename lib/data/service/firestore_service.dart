@@ -13,6 +13,12 @@ abstract class FirestoreService {
   Future<List<Map<String, dynamic>>> getAllGenreCounts();
   Future<void> incrementGenreCount(String genre);
   Future<void> decrementGenreCount(String genre);
+  Future<void> addMovieRatingAndReview(
+      int movieid, double rating, String review);
+  Future<List<Map<String, dynamic>>> getMovieRatingAndReview();
+  Future<List<Map<String, dynamic>>> getRatingAndReview(int movieid);
+  Future<void> updateMovieRatingAndReview(
+      int movieid, double rating, String review);
 }
 
 class FirestoreServiceImpl implements FirestoreService {
@@ -22,6 +28,95 @@ class FirestoreServiceImpl implements FirestoreService {
   FirestoreServiceImpl({required FirebaseFirestore firestore})
       : _firestore = firestore;
 
+  @override
+  Future<void> addMovieRatingAndReview(
+      int movieid, double rating, String review) async {
+    final userId = _auth.currentUser?.uid;
+    print(userId);
+    if (userId != null) {
+      final snapshot = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('movie_rating_and_review')
+          .where('movie_id', isEqualTo: movieid)
+          .get();
+      if (snapshot.docs.isEmpty) {
+        await _firestore
+            .collection('users')
+            .doc(userId)
+            .collection('movie_rating_and_review')
+            .add({
+          'movie_id': movieid,
+          'rating': rating,
+          'review': review,
+        });
+      } else {
+        for (var doc in snapshot.docs) {
+          await doc.reference.update({
+            'rating': rating,
+            'review': review,
+          });
+        }
+      }
+    }
+  }
+
+  @override
+  Future<void> updateMovieRatingAndReview(
+      int movieid, double rating, String review) async {
+    final userId = _auth.currentUser?.uid;
+    if (userId != null) {
+      final snapshot = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('movie_rating_and_review')
+          .where('movie_id', isEqualTo: movieid)
+          .get();
+      for (var doc in snapshot.docs) {
+        await doc.reference.update({
+          'rating': rating,
+          'review': review,
+        });
+      }
+    }
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getMovieRatingAndReview() async {
+    final userId = _auth.currentUser?.uid;
+    if (userId != null) {
+      final snapshot = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('movie_rating_and_review')
+          .get();
+      return snapshot.docs
+          .map((doc) => {
+                'movie_id': doc['movie_id'],
+                'rating': doc['rating'],
+                'review': doc['review']
+              })
+          .toList();
+    }
+    return [];
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getRatingAndReview(int movieid) async {
+    final userId = _auth.currentUser?.uid;
+    if (userId != null) {
+      final snapshot = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('movie_rating_and_review')
+          .where('movie_id', isEqualTo: movieid)
+          .get();
+      return snapshot.docs.map((doc) => doc.data()).toList();
+    }
+    return [];
+  }
+
+  @override
   Future<void> addFavoriteMovie(int movieId) async {
     final userId = _auth.currentUser?.uid;
     if (userId != null) {
@@ -34,6 +129,7 @@ class FirestoreServiceImpl implements FirestoreService {
     }
   }
 
+  @override
   Future<List<int>> getFavoriteMovies() async {
     final userId = _auth.currentUser?.uid;
     if (userId != null) {

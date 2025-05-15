@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:state_managment/view/widget/submit_rating_button.dart';
 import 'package:state_managment/viewmodel/movie_view.dart';
@@ -19,27 +22,31 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
+  late final logger;
   double _rating = 1.0; // Initial rating is 1.0
   final TextEditingController _reviewController = TextEditingController();
   bool _isLoading = false;
+  String review = '';
 
   @override
   void initState() {
     super.initState();
-    // Initialize the loading state
-    _isLoading = true;
+    logger = Logger();
+    _initData();
+  }
+
+  Future<void> _initData() async {
+    logger.d('DetailScreen _initData');
     final vm = Provider.of<MovieViewModel>(context, listen: false);
-    vm.getMovieDetails(widget.movieid).then((_) {
-      setState(() {
-        _isLoading = false;
-      });
-    }).catchError((error) {
-      setState(() {
-        _isLoading = false;
-      });
-      if (kDebugMode) {
-        print('Error fetching movie details: $error');
-      }
+    setState(() => _isLoading = true);
+
+    await vm.getRatingAndReview(widget.movieid);
+    await vm.getMovieDetails(widget.movieid);
+
+    setState(() {
+      _reviewController.text = vm.review;
+      _rating = vm.raiting;
+      _isLoading = false;
     });
   }
 
@@ -89,7 +96,7 @@ class _DetailScreenState extends State<DetailScreen> {
                       RatingBar.builder(
                         initialRating: _rating,
                         minRating: 1.0,
-                        maxRating: 2.0,
+                        maxRating: 5.0,
                         allowHalfRating: true,
                         direction: Axis.horizontal,
                         itemCount: 5,
@@ -127,15 +134,24 @@ class _DetailScreenState extends State<DetailScreen> {
                       const SizedBox(height: 8),
                       detailText('Popularity', movie.popularity.toString()),
                       const SizedBox(height: 16),
-                      const Text('Leave a Review', style: AppTextStyles.bold16),
+                      // Review
+                      const Text('Write a Review:',
+                          style: AppTextStyles.bold16),
                       const SizedBox(height: 8),
                       TextField(
-                        controller: _reviewController,
+                        controller:
+                            _reviewController, // Use the controller here
+                        maxLength: 500,
                         maxLines: 3,
                         decoration: const InputDecoration(
                           hintText: "Write your review...",
                           border: OutlineInputBorder(),
                         ),
+                        onChanged: (value) {
+                          setState(() {
+                            review = value;
+                          });
+                        },
                       ),
                       const SizedBox(height: 16),
                       // Genres
@@ -150,11 +166,13 @@ class _DetailScreenState extends State<DetailScreen> {
                           spacing: 8.0,
                           runSpacing: 8.0,
                           children: movie.genres.map((genre) {
-                            final isInGenre = viewModel.genreCounts.any(
-                                (entry) =>
-                                    entry['genre'] == genre.name &&
-                                    (entry['movie_id'] as List)
-                                        .contains(movie.id));
+                            final isInGenre =
+                                viewModel.genreCounts.any((entry) {
+                              final ids = entry['movie_id'];
+                              return entry['genre'] == genre.name &&
+                                  ids is List &&
+                                  ids.contains(movie.id);
+                            });
 
                             return ElevatedButton(
                               style: ElevatedButton.styleFrom(
@@ -201,7 +219,8 @@ class _DetailScreenState extends State<DetailScreen> {
                         }).toList(),
                       ),
 
-                      SubmitRatingButton(movie: movie, rating: _rating)
+                      SubmitRatingButton(
+                          movie: movie, rating: _rating, review: review)
                     ],
                   ),
                 ),

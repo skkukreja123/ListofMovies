@@ -1,51 +1,35 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:state_managment/data/service/rating_service.dart';
 import 'package:state_managment/model/movie.dart';
 import 'package:state_managment/model/specfic_movie.dart';
+import 'package:state_managment/viewmodel/movie_view.dart';
 
 class SubmitRatingButton extends StatelessWidget {
   final MovieSpecific movie;
   final double rating;
+  final String review;
 
   const SubmitRatingButton({
     Key? key,
     required this.movie,
     required this.rating,
+    required this.review,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final vm = Provider.of<MovieViewModel>(context);
     return ElevatedButton(
         onPressed: () async {
           try {
-            final ratingService = RatingService(
-                dio: Dio()); // Assuming Dio is imported and available
-
-            final guestSessionId = await ratingService.createGuestSession();
-            if (guestSessionId == null || guestSessionId.isEmpty) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Failed to create guest session.'),
-                ),
-              );
-              return;
-            }
-            final response = await ratingService.rateMovie(movie.id, rating,
-                guestSessionId); // Use the actual guest session ID
-            if (response.statusCode == 201) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Rating submitted successfully!'),
-                ),
-              );
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Failed to submit rating. Please try again.'),
-                ),
-              );
-            }
+            await vm.addMovieRatingAndReview(movie.id, rating, review);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Rating submitted successfully!'),
+              ),
+            );
           } catch (e) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(

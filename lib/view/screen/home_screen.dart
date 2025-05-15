@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:state_managment/view/screen/datail_screen.dart';
@@ -18,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+    // print('HomeScreen initState');
     super.initState();
     final vm = Provider.of<MovieViewModel>(context, listen: false);
     vm.getNowPlayingMovies(isInitial: true);

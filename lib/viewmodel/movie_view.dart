@@ -27,6 +27,12 @@ class MovieViewModel extends ChangeNotifier {
   MovieSpecific _movieDetails = MovieSpecific.empty();
   MovieSpecific get movieDetails => _movieDetails;
 
+  List<Map<String, dynamic>> movieRatingAndReview = [];
+
+  List<Map<String, dynamic>> specificMovieRatingAndReview = [];
+  double raiting = 0.0;
+  String review = '';
+
   Future<void> getMovieDetails(int movieId) async {
     _isLoading = true;
     notifyListeners();
@@ -87,6 +93,57 @@ class MovieViewModel extends ChangeNotifier {
     } finally {
       _isLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future<void> addMovieRatingAndReview(
+      int movieId, double rating, String review) async {
+    try {
+      print('movieId: $movieId, rating: $rating, review: $review');
+      print('Movie ID: $movieId');
+      await _firestore.addMovieRatingAndReview(movieId, rating, review);
+
+      print('Movie rating and review added');
+      notifyListeners();
+    } catch (e) {
+      print('Error adding movie rating and review: $e');
+    }
+  }
+
+  Future<void> getMovieRatingAndReview() async {
+    try {
+      movieRatingAndReview = await _firestore.getMovieRatingAndReview();
+      print(movieRatingAndReview);
+      notifyListeners();
+      print('Movie rating and review fetched');
+    } catch (e) {
+      print('Error fetching movie rating and review: $e');
+    }
+  }
+
+  Future<void> updateMovieRatingAndReview(
+      int movieId, double rating, String review) async {
+    try {
+      await _firestore.updateMovieRatingAndReview(movieId, rating, review);
+      print('Movie rating and review updated');
+      notifyListeners();
+    } catch (e) {
+      print('Error updating movie rating and review: $e');
+    }
+  }
+
+  Future<void> getRatingAndReview(int movieId) async {
+    try {
+      specificMovieRatingAndReview =
+          await _firestore.getRatingAndReview(movieId);
+      raiting = specificMovieRatingAndReview[0]['rating'] ?? 0.0;
+      review = specificMovieRatingAndReview[0]['review'] ?? '';
+      print('Rating: $raiting');
+      print('Review: $review');
+      print('Movie rating and review fetched');
+      notifyListeners();
+    } catch (e) {
+      print('Error fetching movie rating and review: $e');
     }
   }
 
